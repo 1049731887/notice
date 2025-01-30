@@ -17,24 +17,24 @@ function initPage() {
   const roomId = window.location.pathname.split('/')[1];
   if (roomId) {
     // 如果有roomId，显示密码输入框并隐藏主界面
-    document.querySelector('.left').style.display = 'none';
-    document.querySelector('.right').style.display = 'none';
-    document.getElementById('passwordModal').style.display = 'block';
+    // document.querySelector('.left').style.display = 'none';
+    // document.querySelector('.right').style.display = 'none';
+    // document.getElementById('passwordModal').style.display = 'block';
     
     // 添加回车事件监听
-    const passwordInput = document.getElementById('roomPasswordInput');
-    passwordInput.onkeydown = (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        submitRoomPassword();
-      }
-    };
+    // const passwordInput = document.getElementById('roomPasswordInput');
+    // passwordInput.onkeydown = (event) => {
+    //   if (event.key === 'Enter') {
+    //     event.preventDefault();
+    //     submitRoomPassword();
+    //   }
+    // };
     // 自动聚焦密码输入框
-    setTimeout(() => passwordInput.focus(), 0);
-  } else {
+    // setTimeout(() => passwordInput.focus(), 0);
+  // } else {
     // 没有roomId，显示主界面
     document.querySelector('.left').style.display = 'flex';
-    document.querySelector('.right').style.display = 'block';
+    // document.querySelector('.right').style.display = 'block';
     document.getElementById('passwordModal').style.display = 'none';
     // 连接WebSocket
     connectWebSocket();
@@ -56,7 +56,7 @@ function submitRoomPassword() {
   // 隐藏密码输入框，显示主界面
   document.getElementById('passwordModal').style.display = 'none';
   document.querySelector('.left').style.display = 'flex';
-  document.querySelector('.right').style.display = 'block';
+  // document.querySelector('.right').style.display = 'block';
   
   // 连接WebSocket
   connectWebSocket();
@@ -140,7 +140,7 @@ function connectWebSocket() {
   signalingServer.onerror = (error) => {
     console.error('WebSocket error:', error);
     if (error.target.readyState === WebSocket.CLOSED) {
-      alert('密码错误或连接失败');
+      // alert('密码错误或连接失败');
       // 显示密码输入框，隐藏主界面
       document.querySelector('.left').style.display = 'none';
       document.querySelector('.right').style.display = 'none';

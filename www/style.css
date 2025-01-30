@@ -394,7 +394,7 @@ pre {
 }
 
 /* Mobile responsive styles */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 9999px) {
   .mobile-only {
     display: block;
   }
