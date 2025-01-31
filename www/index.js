@@ -1,4 +1,4 @@
-const wsUrl = 'wss://fagedongxi.com/ws';
+const wsUrl = 'wss://faagedongxi.com/ws';
 
 var users = [];
 var me = new XChatUser();
@@ -37,7 +37,7 @@ function initPage() {
     // document.querySelector('.right').style.display = 'block';
     document.getElementById('passwordModal').style.display = 'none';
     // 连接WebSocket
-    connectWebSocket();
+    // connectWebSocket();
   }
 }
 
@@ -59,7 +59,7 @@ function submitRoomPassword() {
   // document.querySelector('.right').style.display = 'block';
 
   // 连接WebSocket
-  connectWebSocket();
+  // connectWebSocket();
 }
 
 // 连接WebSocket
@@ -255,14 +255,68 @@ function addChatItem(uid, message) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 function sendMessage(msg) {
-  const message = msg ?? messageInput.value;
+  var message = msg ?? messageInput.value;
   addChatItem(me.id, message);
-  users.forEach(u => {
-    if (u.isMe) {
-      return;
-    }
-    u.sendMessage(message);
-  });
+  // users.forEach(u => {
+  //   if (u.isMe) {
+  //     return;
+  //   }
+  //   u.sendMessage(message);
+  // });
+  var errorMessage = '';
+
+  // 长度检查（Telegram消息长度限制为4096个字符）
+  if (message.length > 4096) {
+    errorMessage += '消息长度不能超过4096个字符。<br>';
+  }
+
+  // 检查 Markdown 的 和`成对
+  var singleBackticks = (message.match(/`/g) || []).length;
+  var doubleBackticks = (message.match(/ /g) || []).length;
+  if (singleBackticks % 2 !== 0) {
+    errorMessage += '单个 ` 必须成对出现。<br>';
+  }
+  if (doubleBackticks % 2 !== 0) {
+    errorMessage += '双 ` 必须成对出现。<br>';
+  }
+
+  if (errorMessage) {
+    document.getElementById('error-message').innerHTML = errorMessage;
+    return;
+  }
+
+  // 自动更正回车符，并加上前缀
+  message = '{{defaultStr}}' + message.replace(/n/g, '%0A');
+
+  // 继续提交表单
+  var actionUrl = '/notice_me?msg=' + encodeURIComponent(message);
+
+  // 发往tg
+  fetch(actionUrl)
+    .then(response => response.text()) // 直接获取响应文本
+    .then(data => {
+      alert('默认信道：' + data); // 弹窗显示响应文本
+      // 清空所有文本框
+      document.querySelectorAll('input[type="text"], textarea').forEach(input => input.value = '');
+    })
+    .catch(error => console.error('Error:', error));
+
+  // 发往seewo
+  fetch('https://api.a2q2.top/seewo/send?type=text', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ data: message }) // 将文本框内容作为请求体发送
+  })
+    .then(response => response.json()) // 直接获取响应文本
+    .then(data => {
+      alert('希沃信道：' + data.message); // 弹窗显示响应文本
+      // 清空所有文本框
+      document.querySelectorAll('input[type="text"], textarea').forEach(input => input.value = '');
+    })
+    .catch(error => console.error('Error:', error));
+
   messageInput.value = '';
 }
 
